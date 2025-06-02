@@ -3,7 +3,7 @@ name: CD
 on:
   push:
     branches:
-      - EML2.2
+      - EML3.1
 
 jobs:
   build-and-push:
