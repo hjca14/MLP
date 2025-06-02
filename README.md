@@ -1,77 +1,21 @@
 
-# MLP - Machine Learning Pipeline
+# MLP - Machine Learning in Production
 
-## Integração Contínua (CI)
+## Entrega Contínua (CD)
+- Build automático de imagem Docker.
 
-Este projeto utiliza GitHub Actions para integração contínua, com foco em:
-
-- Linting do código com **flake8**
-- Testes automatizados com **pytest**
-- Relatórios de cobertura de testes com **pytest-cov**
+- Publicação no Docker Hub após push para os branches principais.
 
 ---
 
 ### Pipeline no GitHub Actions
 
-O pipeline roda automaticamente em cada push ou pull request no branch `EML2.1`.
+O pipeline roda automaticamente em cada push ou pull request no branch `EML2.2`.
 
-Ele executa os seguintes passos:
-
-1. Instala dependências.  
-2. Executa o lint com `flake8` para verificar qualidade do código.  
-3. Roda os testes com `pytest` e gera relatório de cobertura.
-
----
-
-### Como rodar os testes localmente
-
-1. Crie e ative um ambiente virtual (recomendado):
-```bash
-python -m venv venv
-source venv/bin/activate   # Linux/macOS
-# ou no Windows Powershell:
-# .\venv\Scripts\Activate.ps1
-```
-
-2. Instale as dependências:
-```bash
-pip install ```upgrade pip
-pip install -r requirements.txt
-pip install pytest pytest-cov flake8
-```
-
-3. Rode o lint:
-```bash
-flake8 ```max-line-length=120 ```statistics
-```
-
-4. Rode os testes com relatório de cobertura:
-```bash
-pytest ```cov=app ```cov-report=term-missing
-```
-
----
-
-### Estrutura de pastas relevante para CI
-
-```
-MLP/
-├── app.py
-├── requirements.txt
-├── tests/
-│   └── test_app.py
-└── .github/
-    └── workflows/
-        └── ci.yml
-```
-
----
-
-### Como contribuir
-
-- Escreva testes para novos códigos.  
-- Mantenha o padrão de código para passar no `flake8`.  
-- Teste localmente antes de abrir PR.
+- A imagem Docker é automaticamente:
+  - Buildada.
+  - Publicada no Docker Hub como:
+    - docker pull hjca14/classificacao-produto:latest
 
 --------------------------------------------------------------------------------------------------
 
@@ -93,54 +37,14 @@ O modelo foi treinado previamente utilizando técnicas de machine learning.
 
 ---
 
-### Rodar com Docker (Recomendado):
-
-1. Clone o repositório:
+### Rodar com Docker *atualizado com CD*:
 ```bash
-    git clone https://github.com/hjca14/MLP.git
-    cd MLP
-    git checkout EML1.2
+    docker pull hjca14/classificacao-produto:latest
+    docker run -p 5000:5000 hjca14/classificacao-produto:latest
 ```
+#### A API estará disponível em:
+ http://localhost:5000
 
-2. Construa a imagem Docker:
-```bash
-docker build -t classificacao-produto .
-```
-
-3. Execute o container:
-```bash
-docker run -p 5000:5000 classificacao-produto
-```
-
-### Rodar localmente (sem Docker):
-
-1. Clone o repositório e acesse a pasta:
-```bash
-    git clone https://github.com/hjca14/MLP.git
-    cd MLP
-    git checkout EML1.2
-```
-
-2. Crie ambiente virtual (opcional mas recomendado):
-```bash
-python -m venv venv
-source venv/bin/activate  # ou venv\Scripts\activate no Windows
-```
-
-3. Instale as dependências:
-```bash
-pip install -r requirements.txt
-```
-
-4. Gere o modelo de machine learning:
-```bash
-python model_training.py
-```
-
-5. Execute a API:
-```bash
-python app.py
-```
 
 # Como utilizar a API
 ## Endpoint:
