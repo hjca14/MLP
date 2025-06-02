@@ -12,6 +12,7 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = response.get_json()
         self.assertIn('categoria', data)
+        self.assertEqual(data['categoria'], 'Roupas')
 
 
 if __name__ == '__main__':
