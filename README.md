@@ -26,7 +26,6 @@ Ele executa os seguintes passos:
 ### Como rodar os testes localmente
 
 1. Crie e ative um ambiente virtual (recomendado):
-
 ```bash
 python -m venv venv
 source venv/bin/activate   # Linux/macOS
@@ -35,7 +34,6 @@ source venv/bin/activate   # Linux/macOS
 ```
 
 2. Instale as dependências:
-
 ```bash
 pip install ```upgrade pip
 pip install -r requirements.txt
@@ -43,13 +41,11 @@ pip install pytest pytest-cov flake8
 ```
 
 3. Rode o lint:
-
 ```bash
 flake8 ```max-line-length=120 ```statistics
 ```
 
 4. Rode os testes com relatório de cobertura:
-
 ```bash
 pytest ```cov=app ```cov-report=term-missing
 ```
