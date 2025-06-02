@@ -1,7 +1,5 @@
 
-# MLP - Machine Learning in Production
-
-## Entrega Contínua (CD)
+# Entrega Contínua (CD)
 - Build automático de imagem Docker.
 
 - Publicação no Docker Hub após push para os branches principais.
