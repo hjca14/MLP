@@ -49,6 +49,9 @@ jobs:
         pip install -r requirements.txt
         pip install pytest pytest-cov
 
+    - name: Model Training
+      run: python model_training.py
+
     - name: Run tests with coverage
       run: |
         PYTHONPATH=$PYTHONPATH:. pytest --cov=app --cov-report=term-missing --cov-report=html
