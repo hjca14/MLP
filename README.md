@@ -1,7 +1,5 @@
 
-# MLP - Machine Learning Pipeline
-
-## Integração Contínua (CI)
+# Integração Contínua (CI)
 
 Este projeto utiliza GitHub Actions para integração contínua, com foco em:
 
