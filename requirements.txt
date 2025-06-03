@@ -3,7 +3,3 @@ pydantic<2.0
 mlserver-sklearn
 scikit-learn
 joblib
-requests
-unittest-xml-reporting
-pytest
-pytest-cov

@@ -28,8 +28,10 @@ jobs:
       - name: Run Docker container
         run: |
           docker run -d -p 8080:8080 --name classificador classificador-produto
-          sleep 10  # Espera o serviço iniciar
 
+      - name: Install test dependencies
+        run: |
+          python -m pip install pytest pytest-cov requests unittest-xml-reporting
 
       - name: Run tests with pytest and coverage
         run: |
