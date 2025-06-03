@@ -9,7 +9,7 @@ apt-get install -y nginx supervisor && \
 rm -rf /var/lib/apt/lists/*
 
 # Cria diretório para o modelo
-RUN mkdir -p /models/classificador-produto/
+# RUN mkdir -p /models/classificador-produto/
 
 # Copia arquivos do modelo
 COPY model-settings.json /models/classificador-produto/
