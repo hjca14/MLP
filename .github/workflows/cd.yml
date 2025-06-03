@@ -1,12 +1,14 @@
 name: CD
 
 on:
-  push:
-    branches:
-      - EML3.1
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
 
 jobs:
   build-and-push:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'EML3.1' }}
     runs-on: ubuntu-latest
 
     steps:
