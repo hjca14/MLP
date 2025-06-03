@@ -35,18 +35,18 @@ O modelo escolhido neste projeto foi um classificador de textos baseado no datas
 #### 1. Baixe a imagem Docker:
 
 ```bash
-  docker pull hjca14/classificacao-produto:latest
+  docker pull hjca14/mlserver-prod:latest
 ```
 
 #### 2. Construa a imagem Docker:
 
 ```bash
-  docker build -t classificador-produto .
+  docker build -t mlserver-prod .
 ```
 
 #### 3. Execute o container:
 ```bash
-  docker run -d -p 8080:8080 --name classificador classificador-produto
+  docker run -d -p 8080:8080 --name classificador mlserver-prod
 ```
 
 #### 4. Faça uma requisição de inferência:

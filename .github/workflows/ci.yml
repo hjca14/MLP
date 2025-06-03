@@ -23,11 +23,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t classificador-produto .
+          docker build -t mlserver-prod .
 
       - name: Run Docker container
         run: |
-          docker run -d -p 8080:8080 --name classificador classificador-produto
+          docker run -d -p 8080:8080 --name classificador mlserver-prod
 
       - name: Install test dependencies
         run: |
