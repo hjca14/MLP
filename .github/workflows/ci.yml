@@ -3,10 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - EML2.1
+      - EML3.1
   pull_request:
     branches:
-      - EML2.1
+      - EML3.1
 
 jobs:
   lint:
