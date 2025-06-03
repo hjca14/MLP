@@ -30,29 +30,26 @@ O modelo escolhido neste projeto foi um classificador de textos baseado no datas
 ## Como Executar
 ### Pré-requisitos
  - Docker
- - Git
 
 ### Passos
-Clone o repositório:
+#### 1. Baixe a imagem Docker:
 
 ```bash
-git clone https://github.com/hjca14/MLP.git
-cd MLP
-git checkout EML3.1
+  docker pull hjca14/classificacao-produto:latest
 ```
 
-### Construa a imagem Docker:
+#### 2. Construa a imagem Docker:
 
 ```bash
-docker build -t classificador-produto .
+  docker build -t classificador-produto .
 ```
 
-### Execute o container:
+#### 3. Execute o container:
 ```bash
-docker run -d -p 8080:8080 --name classificador classificador-produto
+  docker run -d -p 8080:8080 --name classificador classificador-produto
 ```
 
-### Faça uma requisição de inferência:
+#### 4. Faça uma requisição de inferência:
 Exemplo de payload JSON:
 
 ```json
@@ -68,7 +65,7 @@ Exemplo de payload JSON:
 }
 ```
 
-### Use ferramentas como Postman:
+### Usando ferramentas como Postman:
 ![img.png](img.png)
 
 ---
