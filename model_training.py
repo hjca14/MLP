@@ -1,33 +1,23 @@
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.linear_model import LogisticRegression
 import joblib
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.datasets import fetch_20newsgroups
 
-# Dataset de exemplo
-descricoes = [
-    'Tênis esportivo confortável',
-    'Calça jeans masculina',
-    'Notebook gamer potente',
-    'Blusa de lã feminina',
-    'Smartphone de última geração'
-]
+# Carrega dataset
+categories = ['rec.autos', 'comp.sys.mac.hardware', 'sci.space']
+newsgroups = fetch_20newsgroups(subset='train', categories=categories, remove=('headers', 'footers', 'quotes'))
 
-categorias = [
-    'Calçados',
-    'Roupas',
-    'Eletrônicos',
-    'Roupas',
-    'Eletrônicos'
-]
+# Cria pipeline
+pipeline = Pipeline([
+    ('tfidf', TfidfVectorizer()),
+    ('clf', MultinomialNB()),
+])
 
-# Vetorização
-vectorizer = CountVectorizer()
-X = vectorizer.fit_transform(descricoes)
+# Treina modelo
+pipeline.fit(newsgroups.data, newsgroups.target)
 
-# Modelo
-modelo = LogisticRegression()
-modelo.fit(X, categorias)
+# Salva modelo
+joblib.dump(pipeline, 'model.pkl')
 
-# Salva o modelo e o vetor
-joblib.dump((modelo, vectorizer), 'modelo.pkl')
-
-print("Modelo treinado e salvo com sucesso!")
+print("Modelo treinado e salvo como model.pkl")

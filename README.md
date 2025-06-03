@@ -1,170 +1,98 @@
-
-# Integração Contínua (CI)
-
-Este projeto utiliza GitHub Actions para integração contínua, com foco em:
-
-- Linting do código com **flake8**
-- Testes automatizados com **pytest**
-- Relatórios de cobertura de testes com **pytest-cov**
-
-# Entrega Contínua (CD)
-- Build automático de imagem Docker.
-
-- Publicação no Docker Hub após push para os branches principais.
-
----
-
-### Pipeline no GitHub Actions
-
-O pipeline roda automaticamente em cada push ou pull request no branch `EML3.1`.
-
-Ele executa os seguintes passos:
-
-1. Instala dependências.  
-2. Executa o lint com `flake8` para verificar qualidade do código.  
-3. Roda os testes com `pytest` e gera relatório de cobertura.
-4. A imagem Docker é automaticamente:
-  - Buildada.
-  - Publicada no Docker Hub como:
-    - docker pull hjca14/classificacao-produto:latest
-
----
-
-### Como rodar os testes localmente
-
-1. Crie e ative um ambiente virtual (recomendado):
-```bash
-python -m venv venv
-source venv/bin/activate   # Linux/macOS
-# ou no Windows Powershell:
-# .\venv\Scripts\Activate.ps1
-```
-
-2. Instale as dependências:
-```bash
-pip install ```upgrade pip
-pip install -r requirements.txt
-pip install pytest pytest-cov flake8
-```
-
-3. Rode o lint:
-```bash
-flake8 ```max-line-length=120 ```statistics
-```
-
-4. Rode os testes com relatório de cobertura:
-```bash
-pytest ```cov=app ```cov-report=term-missing
-```
-
----
-
-### Estrutura de pastas relevante para CI
-
-```
-MLP/
-├── app.py
-├── requirements.txt
-├── tests/
-│   └── test_app.py
-└── .github/
-    └── workflows/
-        └── ci.yml
-```
-
----
-
-### Como contribuir
-
-- Escreva testes para novos códigos.  
-- Mantenha o padrão de código para passar no `flake8`.  
-- Teste localmente antes de abrir PR.
-
---------------------------------------------------------------------------------------------------
-
-# API de Classificação de Categoria de Produto
+# Model Serving com MLServer - Classificador de Produto
 
 ## Descrição
 
-Este software é uma **API de predição online** que, ao receber a descrição de um produto, responde com a categoria mais provável desse produto.  
-O modelo foi treinado previamente utilizando técnicas de machine learning.
+Este projeto utiliza o **MLServer** para servir um modelo treinado com um dataset de categorias de produtos/notícias, utilizando `scikit-learn`.
 
 ---
 
 ## Como configurar e executar
 
-### Pré-requisitos:
-
-- Docker instalado
-- (Ou) Python 3.10 instalado com pip
+### Pré-requisitos
+- Docker instalado.
 
 ---
 
-### Rodar com Docker *atualizado com CD*:
-```bash
-    docker pull hjca14/classificacao-produto:latest
-    docker run -p 5000:5000 hjca14/classificacao-produto:latest
-```
-#### A API estará disponível em:
- http://localhost:5000
+### Passos para rodar com Docker
 
+1. Clone o repositório:
+-- bash
+git clone https://github.com/hjca14/MLP.git
+cd MLP
+git checkout EML3.1
+--  
 
-# Como utilizar a API
-## Endpoint:
-> POST /predizer_categoria
+2. Gere o modelo (opcional, caso já exista o `model.pkl`):
+-- bash
+python model_training.py
+--  
 
-## Formato da requisição:
-URL:
-> http://localhost:5000/predizer_categoria
+3. Construa a imagem Docker:
+-- bash
+docker build -t classificador-produto-mlserver .
+--  
 
-Headers:
-> Content-Type: application/json
+4. Execute o container:
+-- bash
+docker run -p 8080:8080 classificador-produto-mlserver
+--  
 
-Body:
+---
 
-```json
-{
-  "descricao": "Calça jeans masculina"
-}
-```
+## Como utilizar a API
+
+A API REST do MLServer estará em:
+
+> http://localhost:8080/v2/models/classificador-produto/infer
+
+---
+
+### Formato da requisição:
+
+-- bash
+curl -X POST http://localhost:8080/v2/models/classificador-produto/infer \
+  -H "Content-Type: application/json" \
+  -d '{
+        "inputs": [
+          {
+            "name": "input-0",
+            "shape": [1],
+            "datatype": "BYTES",
+            "data": ["Calça jeans masculina"]
+          }
+        ]
+      }'
+--  
+
+---
 
 ### Resposta esperada:
-```json
+
+-- json
 {
-  "categoria": "Roupas"
+  "model_name": "classificador-produto",
+  "outputs": [
+    {
+      "name": "output-0",
+      "shape": [1],
+      "datatype": "BYTES",
+      "data": ["Roupas"]
+    }
+  ]
 }
-```
+--  
 
-## Exemplo usando Postman
-![img.png](img.png)
+---
 
-## O que acontece na execução?
-### Treinamento (model_training.py):
-O modelo é treinado com descrições de produtos e salvo como modelo.pkl.
+## Como usar via HTML
 
-### Execução (app.py):
-A API Flask é carregada e fica ouvindo na porta 5000.
-Ao receber uma requisição POST no endpoint /predizer_categoria, ela retorna a categoria prevista.
+Abra `client.html` no navegador e envie a descrição do produto. A resposta aparecerá na tela.
 
-## Serviços envolvidos
-### Serviço de predição (API):
-Único serviço rodando, exposto via HTTP na porta 5000.
+---
 
-## Entrada e saída detalhadas
-| Tipo    | Formato       | Exemplo  |
-| ------- | ---------- |---|
-| Entrada | JSON  |  { "descricao": "Notebook gamer potente" } |
-| Saída | JSON   | { "categoria": "Eletrônicos" }  |
+## Observações importantes
 
+- O modelo é baseado em `sklearn` e `TfidfVectorizer` + `MultinomialNB`.
+- A API segue o padrão **V2 Dataplane** do **MLServer**.
+- Pode-se trocar o modelo facilmente, bastando atualizar `model.pkl`.
 
-## Para quem é este software?
-Equipes de e-commerce que desejam automatizar a classificação de produtos.
-
-Estudantes que querem entender como transformar um modelo de machine learning em uma API de produção.
-
-## Observações importantes:
-- O modelo foi treinado com um dataset simples de exemplo, podendo ser facilmente substituído por datasets reais.
-
-- Não inclui persistência de dados (banco de dados) neste projeto.
-
-- O foco foi a produtização do modelo como serviço.

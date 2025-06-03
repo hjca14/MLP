@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Classificador de Produto</title>
+</head>
+<body>
+  <h1>Classificador de Produto</h1>
+  <input type="text" id="descricao" placeholder="Descrição do produto">
+  <button onclick="enviar()">Enviar</button>
+
+  <h2>Resposta:</h2>
+  <pre id="resposta"></pre>
+
+<script>
+  function enviar() {
+    const descricao = document.getElementById('descricao').value;
+    fetch('http://localhost:8080/v2/models/classificador-produto/infer', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        "inputs": [
+          {
+            "name": "input-0",
+            "shape": [1],
+            "datatype": "BYTES",
+            "data": [descricao]
+          }
+        ]
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('resposta').textContent = JSON.stringify(data, null, 2);
+    })
+    .catch(err => {
+      document.getElementById('resposta').textContent = "Erro: " + err;
+    });
+  }
+</script>
+</body>
+</html>

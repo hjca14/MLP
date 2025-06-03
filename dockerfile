@@ -1,17 +1,29 @@
-# Imagem base oficial Python
-FROM python:3.10
+FROM python:3.10-slim
 
-# Define diretório de trabalho
-WORKDIR /app
+#Instalar MLServer e dependências
+RUN pip install mlserver==1.2.0 mlserver-sklearn
 
-# Copia arquivos
-COPY . .
+#Instalar nginx e supervisord
+RUN apt-get update && \
+apt-get install -y nginx supervisor && \
+rm -rf /var/lib/apt/lists/*
 
-# Instala dependências
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# Cria diretório para o modelo
+RUN mkdir -p /models/classificador-produto/
 
-# Executa o treinamento na build
-RUN python model_training.py
+# Copia arquivos do modelo
+COPY model-settings.json /models/classificador-produto/
+COPY model.pkl /models/classificador-produto/
 
-# Comando padrão
-CMD ["python", "app.py"]
+#Copiar home.html para servir
+COPY home.html /usr/share/nginx/html/index.html
+
+#Copiar config do supervisord
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+#Expor portas
+EXPOSE 5000
+EXPOSE 80
+
+#Comando para iniciar ambos
+CMD ["/usr/bin/supervisord"]
