@@ -3,7 +3,7 @@
 ## Descrição
 Este projeto foi desenvolvido como parte de um exercício prático de aula, com o objetivo de configurar o MLServer para hospedar e servir um modelo de Machine Learning utilizando Docker.
 
-## A proposta consiste em:
+#### A proposta consiste em:
 
 - Escolher e treinar um modelo próprio.
 - Configurar o MLServer com esse modelo.
@@ -11,6 +11,7 @@ Este projeto foi desenvolvido como parte de um exercício prático de aula, com 
 
 O modelo escolhido neste projeto foi um classificador de textos baseado no dataset fetch_20newsgroups, utilizando uma pipeline com TfidfVectorizer e MultinomialNB da biblioteca scikit-learn.
 
+---
 ## Estrutura do Projeto
 ```graphql
 ├── Dockerfile
@@ -25,6 +26,7 @@ O modelo escolhido neste projeto foi um classificador de textos baseado no datas
         └── cd.yml          # Workflow de entrega contínua (CD)
 ```
 
+---
 ## Como Executar
 ### Pré-requisitos
  - Docker
@@ -69,6 +71,7 @@ Exemplo de payload JSON:
 ### Use ferramentas como Postman:
 ![img.png](img.png)
 
+---
 ## Sobre o Modelo
 Pipeline: TfidfVectorizer + MultinomialNB
 
@@ -80,6 +83,7 @@ Dataset: Subconjunto do fetch_20newsgroups com as categorias:
 
 O modelo foi treinado e serializado com joblib como model.pkl.
 
+---
 ## Automação
 Este projeto conta com automação via GitHub Actions:
 
@@ -89,6 +93,7 @@ Executa testes automatizados com pytest e coverage sempre que há push ou pull r
 ### CD
 Automatiza o processo de build e deploy no Docker Hub sempre que há push ou pull request para a branch EML3.1.
 
+---
 ## Testes
 Os testes de integração verificam se a API está funcionando corretamente e se o modelo responde adequadamente a uma requisição de inferência.
 
