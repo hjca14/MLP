@@ -39,9 +39,10 @@ jobs:
           docker run -d -p 8080:8080 --name classificador classificador-produto
           sleep 10  # Espera o serviço iniciar
 
-      - name: Test MLServer API
+
+      - name: Run tests with pytest and coverage
         run: |
-          python test_mlserver.py
+          pytest --cov=./ --cov-report=term-missing --cov-report=xml
 
       - name: Stop Docker container
         if: always()
