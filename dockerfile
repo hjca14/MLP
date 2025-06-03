@@ -10,9 +10,15 @@ RUN pip install --upgrade pip && \
 # Cria diretório para o modelo
 RUN mkdir -p /models/classificador-produto/
 
+# Copiar script de treinamento para dentro do container
+COPY model_training.py /tmp/
+
+# Rodar o treinamento para gerar model.pkl dentro do container
+RUN python /tmp/model_training.py && \
+    mv model.pkl /models/classificador-produto/
+
 # Copia arquivos do modelo
 COPY model-settings.json /models/classificador-produto/
-COPY model.pkl /models/classificador-produto/
 
 # Expõe a porta padrão do MLServer
 EXPOSE 8080
