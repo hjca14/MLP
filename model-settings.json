@@ -1,6 +1,6 @@
 {
   "name": "classificador-produto",
-  "implementation": "mlserver.sklearn.SKLearnModel",
+  "implementation": "mlserver_sklearn.SKLearnModel",
   "parameters": {
     "uri": "./model.pkl"
   }
