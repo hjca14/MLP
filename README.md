@@ -1,98 +1,99 @@
-# Model Serving com MLServer - Classificador de Produto
+# Configuração do MLServer com Modelo Próprio
 
 ## Descrição
+Este projeto foi desenvolvido como parte de um exercício prático de aula, com o objetivo de configurar o MLServer para hospedar e servir um modelo de Machine Learning utilizando Docker.
 
-Este projeto utiliza o **MLServer** para servir um modelo treinado com um dataset de categorias de produtos/notícias, utilizando `scikit-learn`.
+## A proposta consiste em:
 
----
+- Escolher e treinar um modelo próprio.
+- Configurar o MLServer com esse modelo.
+- Disponibilizar o serviço via Docker para facilitar a replicação e execução do projeto.
 
-## Como configurar e executar
+O modelo escolhido neste projeto foi um classificador de textos baseado no dataset fetch_20newsgroups, utilizando uma pipeline com TfidfVectorizer e MultinomialNB da biblioteca scikit-learn.
 
+## Estrutura do Projeto
+```graphql
+├── Dockerfile
+├── model_settings.json      # Configurações do MLServer para carregar o modelo
+├── model_training.py        # Script de treinamento e serialização do modelo
+├── requirements.txt         # Dependências do projeto
+├── tests/
+│   └── test_mlserver.py     # Testes automatizados com pytest
+└── .github/
+    └── workflows/
+        ├── ci.yml          # Workflow de integração contínua (CI)
+        └── cd.yml          # Workflow de entrega contínua (CD)
+```
+
+## Como Executar
 ### Pré-requisitos
-- Docker instalado.
+ - Docker
+ - Git
 
----
+### Passos
+Clone o repositório:
 
-### Passos para rodar com Docker
-
-1. Clone o repositório:
--- bash
+```bash
 git clone https://github.com/hjca14/MLP.git
 cd MLP
 git checkout EML3.1
---  
+```
 
-2. Gere o modelo (opcional, caso já exista o `model.pkl`):
--- bash
-python model_training.py
---  
+### Construa a imagem Docker:
 
-3. Construa a imagem Docker:
--- bash
-docker build -t classificador-produto-mlserver .
---  
+```bash
+docker build -t classificador-produto .
+```
 
-4. Execute o container:
--- bash
-docker run -p 8080:8080 classificador-produto-mlserver
---  
+### Execute o container:
+```bash
+docker run -d -p 8080:8080 --name classificador classificador-produto
+```
 
----
+### Faça uma requisição de inferência:
+Exemplo de payload JSON:
 
-## Como utilizar a API
-
-A API REST do MLServer estará em:
-
-> http://localhost:8080/v2/models/classificador-produto/infer
-
----
-
-### Formato da requisição:
-
--- bash
-curl -X POST http://localhost:8080/v2/models/classificador-produto/infer \
-  -H "Content-Type: application/json" \
-  -d '{
-        "inputs": [
-          {
-            "name": "input-0",
-            "shape": [1],
-            "datatype": "BYTES",
-            "data": ["Calça jeans masculina"]
-          }
-        ]
-      }'
---  
-
----
-
-### Resposta esperada:
-
--- json
+```json
 {
-  "model_name": "classificador-produto",
-  "outputs": [
+  "inputs": [
     {
-      "name": "output-0",
+      "name": "input-0",
       "shape": [1],
       "datatype": "BYTES",
-      "data": ["Roupas"]
+      "data": ["Calça jeans masculina"]
     }
   ]
 }
---  
+```
 
----
+### Use ferramentas como Postman:
+![img.png](img.png)
 
-## Como usar via HTML
+## Sobre o Modelo
+Pipeline: TfidfVectorizer + MultinomialNB
 
-Abra `client.html` no navegador e envie a descrição do produto. A resposta aparecerá na tela.
+Dataset: Subconjunto do fetch_20newsgroups com as categorias:
 
----
+- rec.autos
+- comp.sys.mac.hardware
+- sci.space
 
-## Observações importantes
+O modelo foi treinado e serializado com joblib como model.pkl.
 
-- O modelo é baseado em `sklearn` e `TfidfVectorizer` + `MultinomialNB`.
-- A API segue o padrão **V2 Dataplane** do **MLServer**.
-- Pode-se trocar o modelo facilmente, bastando atualizar `model.pkl`.
+## Automação
+Este projeto conta com automação via GitHub Actions:
 
+### CI
+Executa testes automatizados com pytest e coverage sempre que há push ou pull request para a branch EML3.1.
+
+### CD
+Automatiza o processo de build e deploy no Docker Hub sempre que há push ou pull request para a branch EML3.1.
+
+## Testes
+Os testes de integração verificam se a API está funcionando corretamente e se o modelo responde adequadamente a uma requisição de inferência.
+
+### Execute localmente com:
+
+```bash
+pytest --cov=./ --cov-report=term-missing
+```
