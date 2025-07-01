@@ -1,126 +1,52 @@
-# API de Classificação de Categoria de Produto
+# Registro de Experimentos com MLflow
+Este projeto demonstra como utilizar o MLflow para registrar parâmetros, métricas e modelos treinados durante experimentos de machine learning.
 
-## Descrição
+O objetivo é classificar descrições de produtos em categorias, usando diferentes combinações de hiperparâmetros e acompanhando os resultados com o MLflow.
 
-Este software é uma **API de predição online** que, ao receber a descrição de um produto, responde com a categoria mais provável desse produto.  
-O modelo foi treinado previamente utilizando técnicas de machine learning.
+# Estrutura
+dados.csv: conjunto de dados com descrições e categorias
 
----
+mlflow_training.py: script que treina o modelo com diferentes hiperparâmetros e registra tudo no MLflow
 
-## Como configurar e executar
+requirements.txt: dependências
 
-### Pré-requisitos:
-
-- Docker instalado
-- (Ou) Python 3.10 instalado com pip
-
----
-
-### Rodar com Docker (Recomendado):
-
-1. Clone o repositório:
-```bash
-    git clone https://github.com/hjca14/MLP.git
-    cd MLP
-    git checkout EML1.2
-```
-
-2. Construa a imagem Docker:
-```bash
-docker build -t classificacao-produto .
-```
-
-3. Execute o container:
-```bash
-docker run -p 5000:5000 classificacao-produto
-```
-
-### Rodar localmente (sem Docker):
-
-1. Clone o repositório e acesse a pasta:
-```bash
-    git clone https://github.com/hjca14/MLP.git
-    cd MLP
-    git checkout EML1.2
-```
-
-2. Crie ambiente virtual (opcional mas recomendado):
-```bash
-python -m venv venv
-source venv/bin/activate  # ou venv\Scripts\activate no Windows
-```
-
-3. Instale as dependências:
+# Como rodar
+1. Instalar dependências
 ```bash
 pip install -r requirements.txt
 ```
-
-4. Gere o modelo de machine learning:
+2. Rodar o script
 ```bash
-python model_training.py
+python mlflow_training.py
 ```
-
-5. Execute a API:
+3. Iniciar o MLflow UI
 ```bash
-python app.py
+mlflow ui
 ```
+4. Acesse em: http://localhost:5000
 
-# Como utilizar a API
-## Endpoint:
-> POST /predizer_categoria
 
-## Formato da requisição:
-URL:
-> http://localhost:5000/predizer_categoria
+# O que é registrado
+Durante cada execução, o MLflow armazena:
 
-Headers:
-> Content-Type: application/json
+n_estimators e max_depth (parâmetros do modelo)
 
-Body:
+accuracy (métrica de desempenho)
 
-```json
-{
-  "descricao": "Calça jeans masculina"
-}
-```
+O próprio modelo treinado (em Artifacts/)
 
-### Resposta esperada:
-```json
-{
-  "categoria": "Roupas"
-}
-```
+# Melhor resultado encontrado
+O melhor modelo foi o registrado na run:
 
-## Exemplo usando Postman
+ - Run ID: 3cf19ad0c3d44141ac499c6abda79bad
+ - Experimento ID: 755672997361895794
+ - Acurácia: 0.833
+
 ![img.png](img.png)
 
-## O que acontece na execução?
-### Treinamento (model_training.py):
-O modelo é treinado com descrições de produtos e salvo como modelo.pkl.
+# Considerações Finais
+A maioria dos modelos alcançou entre 0.5 e 0.666 de acurácia, indicando que o dataset ainda é limitado.
 
-### Execução (app.py):
-A API Flask é carregada e fica ouvindo na porta 5000.
-Ao receber uma requisição POST no endpoint /predizer_categoria, ela retorna a categoria prevista.
+Mesmo com poucos exemplos, o uso do MLflow permitiu identificar rapidamente o melhor conjunto de parâmetros, facilitando a análise comparativa entre execuções.
 
-## Serviços envolvidos
-### Serviço de predição (API):
-Único serviço rodando, exposto via HTTP na porta 5000.
-
-## Entrada e saída detalhadas
-| Tipo    | Formato       | Exemplo  |
-| ------- | ---------- |---|
-| Entrada | JSON  |  { "descricao": "Notebook gamer potente" } |
-| Saída | JSON   | { "categoria": "Eletrônicos" }  |
-
-
-## Para quem é este software?
-Equipes de e-commerce que desejam automatizar a classificação de produtos.
-
-Estudantes que querem entender como transformar um modelo de machine learning em uma API de produção.
-
-## Observações importantes:
-- O modelo foi treinado com um dataset simples de exemplo, podendo ser facilmente substituído por datasets reais.
-
-- Não inclui persistência de dados (banco de dados) neste projeto.
-
-- O foco foi a produtização do modelo como serviço.
+O experimento pode ser refeito com dados reais ou mais robustos para melhores resultados.
