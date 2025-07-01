@@ -41,12 +41,10 @@ AWS Lambda (simulado no cálculo de custo)
 
 # Execução
 Instale as dependências:
-
 ```nginx
 pip install -r requirements.txt
-Execute o script:
 ```
-
+Execute o script:
 ```nginx
 python extrator.py
 ```
